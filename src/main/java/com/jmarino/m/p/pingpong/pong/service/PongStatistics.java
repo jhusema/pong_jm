@@ -1,8 +1,7 @@
 package com.jmarino.m.p.pingpong.pong.service;
 
 public class PongStatistics {
-	public int totalPingMessageRead;
-	public int totalPingMessageReplied;
-	
-	
+	public long totalPingMessageRead;
+	public long totalPingMessageReplied;
+
 }
