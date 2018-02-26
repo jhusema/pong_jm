@@ -40,8 +40,8 @@ public class Client {
 		Channel channel = null;
 		try {
 			channel = this.connection.createChannel();
-			channel.queueDeclare(ConnectionProperties.PONG_QUEUE_NAME, false, false, false, null);
-			channel.basicPublish("", ConnectionProperties.PONG_QUEUE_NAME, null, message.getBytes());
+			channel.queueDeclare(ConstansProperties.PONG_QUEUE_NAME, false, false, false, null);
+			channel.basicPublish("", ConstansProperties.PONG_QUEUE_NAME, null, message.getBytes());
 			channel.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -54,8 +54,8 @@ public class Client {
 	public void initPingMessageRead() {
 		try {
 			Channel channel = this.connection.createChannel();
-			channel.queueDeclare(ConnectionProperties.PING_QUEUE_NAME, false, false, false, null);
-			channel.basicConsume(ConnectionProperties.PING_QUEUE_NAME, new PingMessageConsumer(channel, this));
+			channel.queueDeclare(ConstansProperties.PING_QUEUE_NAME, false, false, false, null);
+			channel.basicConsume(ConstansProperties.PING_QUEUE_NAME, new PingMessageConsumer(channel, this));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
