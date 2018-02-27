@@ -4,20 +4,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.jmarino.m.p.pingpong.pong.broker.Client;
+import com.jmarino.m.p.pingpong.pong.broker.BrokerConnMngmt;
 
 @RestController
 public class PongService {
 	@Autowired
-	private Client client;
+	private BrokerConnMngmt brokerConnMngmt;
 
 	@RequestMapping
 	public PongStatistics pongStatistics() {
-		PongStatistics pongStatistics = new PongStatistics();
-		pongStatistics.totalPingMessageRead = 5;
-		pongStatistics.totalPingMessageReplied = 4;
-		if (this.client != null) {
-			pongStatistics = this.client.getPongStatistics();
+		PongStatistics pongStatistics = this.brokerConnMngmt.getPongStatistics();
+		if (pongStatistics == null) {
+			pongStatistics = new PongStatistics();
 		}
 		return pongStatistics;
 	}

@@ -2,42 +2,53 @@ package com.jmarino.m.p.pingpong.pong.broker;
 
 import java.io.IOException;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.stereotype.Service;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rabbitmq.client.AMQP;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.DefaultConsumer;
 import com.rabbitmq.client.Envelope;
 
-public class PingMessageConsumer extends DefaultConsumer {
+@Service
+public class PingMessageConsumer {
+	private BrokerConnMngmt brokerConnMngmt;
+	private PongMessagePublisher pongMessagePublisher;
 
-	private Client client;
-
-	public PingMessageConsumer(Channel channel, Client client) {
-		super(channel);
-		this.client = client;
+	public PingMessageConsumer(BrokerConnMngmt brokerMessage, PongMessagePublisher pongMessagePublisher) {
+		this.brokerConnMngmt = brokerMessage;
+		this.pongMessagePublisher = pongMessagePublisher;
+		this.initConsumer();
 	}
 
-	@Override
-	public void handleDelivery(String consumerTag, Envelope envelope, BasicProperties properties, byte[] body)
-			throws IOException {
+	private void initConsumer() {
+		Channel channel = this.brokerConnMngmt.getChannel();
 		try {
-			// Simulación de dos segundos de espera.
-			Thread.sleep(2000);
-			ObjectMapper mapper = new ObjectMapper();
-			BrokerMessage brokerMessage = mapper.readValue(body, BrokerMessage.class);
-			brokerMessage.message=ConstansProperties.PING_QUEUE_NAME;
-			String jsonMessage = "";
-			try {
-				jsonMessage = mapper.writeValueAsString(brokerMessage);
-			} catch (JsonProcessingException e1) {
-				e1.printStackTrace();
-			}
-			this.client.sendPongMessage(jsonMessage);
-		} catch (InterruptedException e) {
+			channel.queueDeclare(ConstansProperties.PING_QUEUE_NAME, false, false, false, null);
+			channel.basicConsume(ConstansProperties.PING_QUEUE_NAME, true, this.new Consumer(channel));
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
+	private class Consumer extends DefaultConsumer {
+
+		public Consumer(Channel channel) {
+			super(channel);
+		}
+
+		@Override
+		public void handleDelivery(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body)
+				throws IOException {
+			ObjectMapper mapper = new ObjectMapper();
+			BrokerMessage brokerMessage = mapper.readValue(body, BrokerMessage.class);
+			brokerMessage.message = ConstansProperties.PONG_MESSAGE;
+			try {
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			pongMessagePublisher.sendPingMessage(brokerMessage);
+		}
+	}
 }

@@ -55,7 +55,7 @@ public class Client {
 		try {
 			Channel channel = this.connection.createChannel();
 			channel.queueDeclare(ConstansProperties.PING_QUEUE_NAME, false, false, false, null);
-			channel.basicConsume(ConstansProperties.PING_QUEUE_NAME, new PingMessageConsumer(channel, this));
+//			channel.basicConsume(ConstansProperties.PING_QUEUE_NAME, new PingMessageConsumer(channel, this));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
