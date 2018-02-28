@@ -11,7 +11,7 @@ public class PongService {
 	@Autowired
 	private BrokerConnMngmt brokerConnMngmt;
 
-	@RequestMapping
+	@RequestMapping(path="pongStatistics")
 	public PongStatistics pongStatistics() {
 		PongStatistics pongStatistics = this.brokerConnMngmt.getPongStatistics();
 		if (pongStatistics == null) {

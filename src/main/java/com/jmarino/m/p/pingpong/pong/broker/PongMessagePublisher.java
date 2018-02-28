@@ -14,7 +14,7 @@ public class PongMessagePublisher {
 		this.brokerConnMngmt = brokerMessage;
 	}
 
-	public void sendPingMessage(BrokerMessage message) {
+	public void sendPongMessage(BrokerMessage message) {
 		message.message = ConstansProperties.PONG_MESSAGE;
 		ObjectMapper mapper = new ObjectMapper();
 		String jsonMessage = "";

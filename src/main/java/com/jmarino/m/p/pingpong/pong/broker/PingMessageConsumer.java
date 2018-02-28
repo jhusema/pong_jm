@@ -18,7 +18,9 @@ public class PingMessageConsumer {
 	public PingMessageConsumer(BrokerConnMngmt brokerMessage, PongMessagePublisher pongMessagePublisher) {
 		this.brokerConnMngmt = brokerMessage;
 		this.pongMessagePublisher = pongMessagePublisher;
-		this.initConsumer();
+		for (int i = 0; i <= 7; i++) {
+			this.initConsumer();
+		}
 	}
 
 	private void initConsumer() {
@@ -48,7 +50,7 @@ public class PingMessageConsumer {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			pongMessagePublisher.sendPingMessage(brokerMessage);
+			pongMessagePublisher.sendPongMessage(brokerMessage);
 		}
 	}
 }
